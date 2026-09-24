@@ -10,7 +10,7 @@ import {
   Truck, 
   Layers,
   ArrowRight
-} from 'lucide-react';
+} from '../common/Icons';
 import { useApp } from '../../context/AppContext';
 
 export const ProblemSolutionCompare: React.FC = () => {

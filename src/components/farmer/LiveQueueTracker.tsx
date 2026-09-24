@@ -7,7 +7,7 @@ import {
   MapPin, 
   Radio,
   Truck
-} from 'lucide-react';
+} from '../common/Icons';
 import { getStageMeta } from '../../utils/formatters';
 import { calculateJourneyPlan } from '../../utils/calculations';
 import { announceTokenSpeech, playMandiChime } from '../../utils/audio';

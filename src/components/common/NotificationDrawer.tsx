@@ -10,7 +10,7 @@ import {
   Send,
   AlertCircle,
   ShieldCheck
-} from 'lucide-react';
+} from './Icons';
 
 export const NotificationDrawer: React.FC = () => {
   const {

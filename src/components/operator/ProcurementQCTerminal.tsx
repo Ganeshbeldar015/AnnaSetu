@@ -11,7 +11,7 @@ import {
   Calculator,
   Building2,
   User
-} from 'lucide-react';
+} from '../common/Icons';
 import { calculateMSPProcurement } from '../../utils/calculations';
 import { formatCurrencyINR, formatWeightQuintals } from '../../utils/formatters';
 import { QCInspection } from '../../types';

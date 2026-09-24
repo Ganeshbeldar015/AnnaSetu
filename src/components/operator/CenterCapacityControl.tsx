@@ -10,7 +10,7 @@ import {
   CloudRain, 
   Send,
   Radio
-} from 'lucide-react';
+} from '../common/Icons';
 
 export const CenterCapacityControl: React.FC = () => {
   const { 

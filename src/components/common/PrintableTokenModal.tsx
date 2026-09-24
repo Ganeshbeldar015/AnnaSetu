@@ -1,6 +1,6 @@
 import React from 'react';
 import { BookingToken, FarmerProfile } from '../../types';
-import { X, Printer, Calendar, QrCode, CheckCircle2, ShieldCheck, MapPin, Clock } from 'lucide-react';
+import { X, Printer, Calendar, QrCode, CheckCircle2, ShieldCheck, MapPin, Clock } from './Icons';
 import { formatWeightQuintals } from '../../utils/formatters';
 
 interface PrintableTokenModalProps {

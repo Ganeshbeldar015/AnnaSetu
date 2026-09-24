@@ -14,7 +14,7 @@ import {
   Phone,
   ArrowRight,
   ShieldCheck
-} from 'lucide-react';
+} from '../common/Icons';
 import { ProcurementCenter } from '../../types';
 
 export const GeospatialCenterMap: React.FC = () => {

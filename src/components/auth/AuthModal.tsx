@@ -14,7 +14,7 @@ import {
   MapPin, 
   FileText,
   KeyRound
-} from 'lucide-react';
+} from '../common/Icons';
 
 export const AuthModal: React.FC = () => {
   const { 

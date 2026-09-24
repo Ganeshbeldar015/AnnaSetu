@@ -12,7 +12,7 @@ import {
   Sparkles,
   Building2,
   ArrowRight
-} from 'lucide-react';
+} from '../common/Icons';
 import { formatCurrencyINR, formatWeightQuintals } from '../../utils/formatters';
 
 export const PaymentTracker: React.FC = () => {

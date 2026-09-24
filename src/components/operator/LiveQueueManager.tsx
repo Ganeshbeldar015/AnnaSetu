@@ -14,7 +14,7 @@ import {
   ArrowRight,
   ShieldCheck,
   RotateCcw
-} from 'lucide-react';
+} from '../common/Icons';
 import { getStageMeta } from '../../utils/formatters';
 import { announceTokenSpeech } from '../../utils/audio';
 

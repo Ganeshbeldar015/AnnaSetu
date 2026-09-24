@@ -8,7 +8,7 @@ import {
   ShieldCheck, 
   CheckCircle2,
   Sparkles
-} from 'lucide-react';
+} from '../common/Icons';
 import { useApp } from '../../context/AppContext';
 
 export const HowItWorks: React.FC = () => {

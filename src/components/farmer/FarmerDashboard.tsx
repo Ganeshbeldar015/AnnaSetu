@@ -12,8 +12,14 @@ import {
   Printer, 
   Sparkles, 
   Bell,
-  Truck
-} from 'lucide-react';
+  Truck,
+  Tractor,
+  Wheat,
+  SpeakerWave,
+  ShieldCheck,
+  CheckCircle,
+  Hourglass
+} from '../common/Icons';
 import { getStageMeta } from '../../utils/formatters';
 import { calculateJourneyPlan } from '../../utils/calculations';
 import { PrintableTokenModal } from '../common/PrintableTokenModal';
@@ -41,6 +47,19 @@ export const FarmerDashboard: React.FC = () => {
     safetyBufferMinutes: 30
   });
 
+  const handlePlayVoiceGuidance = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const statusText = myActiveToken 
+        ? `Namaste ${farmerProfile.name.split(' ')[0]}. Your token number is ${myActiveToken.tokenNumber}. Current stage is ${stageMeta.label}. Mandi center is ${myActiveToken.centerName}. Queue position is number ${myActiveToken.queuePosition}. Estimated waiting time is ${myActiveToken.estimatedWaitMinutes} minutes.`
+        : `Namaste ${farmerProfile.name.split(' ')[0]}. You have no active token. Please click Book Slot to schedule your MSP grain delivery.`;
+      const utterance = new SpeechSynthesisUtterance(statusText);
+      utterance.rate = 0.95;
+      utterance.lang = 'en-IN';
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Top Welcome Banner */}
@@ -65,7 +84,16 @@ export const FarmerDashboard: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex items-center space-x-2.5">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={handlePlayVoiceGuidance}
+              title="Listen to audio instructions in English / Hindi"
+              className="px-3 py-2 rounded-xl bg-emerald-700/80 hover:bg-emerald-600 text-white text-xs font-semibold border border-emerald-500/50 transition flex items-center space-x-1.5 shadow"
+            >
+              <SpeakerWave className="w-4 h-4 text-amber-300" />
+              <span className="hidden sm:inline">Voice Guide (आवाज)</span>
+            </button>
+
             <button
               onClick={() => setActiveView('book_slot')}
               className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold transition shadow flex items-center space-x-1.5"
@@ -81,6 +109,117 @@ export const FarmerDashboard: React.FC = () => {
               <Bell className="w-3.5 h-3.5 text-amber-400" />
               <span>{t('sms_log')}</span>
             </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 3-Step Farmer Simple Pipeline Guide */}
+      <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-amber-50 border-2 border-emerald-200/80 rounded-2xl p-5 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-ping"></span>
+            <h3 className="font-extrabold text-slate-900 text-sm sm:text-base">
+              किसान सरल ३-चरण मार्गदर्शिका (Simple 3-Step Farmer Journey)
+            </h3>
+          </div>
+          <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+            Zero Middlemen • Direct DBT
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+          {/* Step 1 */}
+          <div 
+            onClick={() => setActiveView('book_slot')}
+            className={`p-4 rounded-xl border transition cursor-pointer select-none relative ${
+              myActiveToken 
+                ? 'bg-emerald-100/60 border-emerald-300 shadow-sm' 
+                : 'bg-white border-amber-300 shadow hover:shadow-md'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-emerald-700 text-white font-black text-xs flex items-center justify-center">
+                1
+              </span>
+              {myActiveToken ? (
+                <span className="text-[10px] font-bold text-emerald-800 bg-emerald-200 px-2 py-0.5 rounded-full flex items-center space-x-1">
+                  <CheckCircle className="w-3 h-3 text-emerald-700" />
+                  <span>Token Active</span>
+                </span>
+              ) : (
+                <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full">
+                  Action Needed
+                </span>
+              )}
+            </div>
+            <h4 className="font-bold text-slate-900 text-sm">१. स्लॉट बुक करें (Book Slot)</h4>
+            <p className="text-xs text-slate-600 mt-1">
+              {myActiveToken 
+                ? `Booked for ${myActiveToken.date} (${myActiveToken.timeSlot})` 
+                : 'Select date & mandi time window. Get digital Token A-024 in 30 seconds.'}
+            </p>
+            <div className="mt-3 flex items-center text-xs font-bold text-emerald-700">
+              <span>{myActiveToken ? 'View / Change Slot' : 'Book Free Slot Now'}</span>
+              <ArrowRight className="w-3.5 h-3.5 ml-1" />
+            </div>
+          </div>
+
+          {/* Step 2 */}
+          <div 
+            onClick={() => setActiveView('live_queue')}
+            className={`p-4 rounded-xl border transition cursor-pointer select-none relative ${
+              myActiveToken && myActiveToken.stage !== 'booked'
+                ? 'bg-blue-100/60 border-blue-300 shadow-sm'
+                : 'bg-white border-slate-200 hover:border-blue-400'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-blue-700 text-white font-black text-xs flex items-center justify-center">
+                2
+              </span>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                myActiveToken?.stage === 'called' ? 'bg-emerald-500 text-white animate-pulse' : 'bg-blue-100 text-blue-800'
+              }`}>
+                {myActiveToken ? stageMeta.label : 'Gate & Scale'}
+              </span>
+            </div>
+            <h4 className="font-bold text-slate-900 text-sm">२. मंडी गेट व टोकन (Live Queue)</h4>
+            <p className="text-xs text-slate-600 mt-1">
+              Drive tractor only when turn approaches. Scan QR at gate; token called to Counter.
+            </p>
+            <div className="mt-3 flex items-center text-xs font-bold text-blue-700">
+              <span>Track Live Queue & Audio</span>
+              <ArrowRight className="w-3.5 h-3.5 ml-1" />
+            </div>
+          </div>
+
+          {/* Step 3 */}
+          <div 
+            onClick={() => setActiveView('payments')}
+            className={`p-4 rounded-xl border transition cursor-pointer select-none relative ${
+              myActiveToken?.stage === 'payment_completed'
+                ? 'bg-emerald-100/70 border-emerald-400 shadow-sm'
+                : 'bg-white border-slate-200 hover:border-emerald-400'
+            }`}
+          >
+            <div className="flex items-center justify-between mb-2">
+              <span className="w-7 h-7 rounded-lg bg-amber-600 text-white font-black text-xs flex items-center justify-center">
+                3
+              </span>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                myActiveToken?.stage === 'payment_completed' ? 'bg-emerald-600 text-white' : 'bg-amber-100 text-amber-800'
+              }`}>
+                {myActiveToken?.paymentDetails?.status || 'Direct Bank DBT'}
+              </span>
+            </div>
+            <h4 className="font-bold text-slate-900 text-sm">३. बैंक खाते में DBT (Instant Bank Payment)</h4>
+            <p className="text-xs text-slate-600 mt-1">
+              Automated moisture formula; zero cash cuts. Full MSP transferred directly via RBI PFMS.
+            </p>
+            <div className="mt-3 flex items-center text-xs font-bold text-amber-700">
+              <span>View Payment & E-J Form</span>
+              <ArrowRight className="w-3.5 h-3.5 ml-1" />
+            </div>
           </div>
         </div>
       </div>

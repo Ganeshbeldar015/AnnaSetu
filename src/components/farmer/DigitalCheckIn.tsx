@@ -12,7 +12,7 @@ import {
   MapPin, 
   Clock,
   ShieldCheck
-} from 'lucide-react';
+} from '../common/Icons';
 import { playMandiChime } from '../../utils/audio';
 
 export const DigitalCheckIn: React.FC = () => {

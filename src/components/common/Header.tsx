@@ -9,10 +9,14 @@ import {
   User, 
   Building2, 
   ShieldCheck,
+  Shield,
   RotateCcw,
   Lock,
-  LogOut
-} from 'lucide-react';
+  LogOut,
+  Database
+} from './Icons';
+import { SecurityMatrixModal } from './SecurityMatrixModal';
+import { SupabaseStatusModal } from './SupabaseStatusModal';
 
 export const Header: React.FC = () => {
   const {
@@ -27,6 +31,10 @@ export const Header: React.FC = () => {
     t,
     notifications,
     setIsNotificationDrawerOpen,
+    isSecurityMatrixOpen,
+    setIsSecurityMatrixOpen,
+    isSupabaseModalOpen,
+    setIsSupabaseModalOpen,
     resetDemoData,
     isAuthenticated,
     authUser,
@@ -86,6 +94,26 @@ export const Header: React.FC = () => {
               हिन्दी
             </button>
           </div>
+
+          {/* Security Matrix Button */}
+          <button
+            onClick={() => setIsSecurityMatrixOpen(true)}
+            title="Inspect 3-Role Access Rules & Security Matrix"
+            className="flex items-center space-x-1.5 text-slate-300 hover:text-white transition text-[11px] px-2.5 py-0.5 rounded-md bg-slate-800 border border-slate-700 hover:bg-slate-700"
+          >
+            <Shield className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="hidden sm:inline font-medium">RBAC Security</span>
+          </button>
+
+          {/* Supabase Backend Integration Assistant */}
+          <button
+            onClick={() => setIsSupabaseModalOpen(true)}
+            title="Supabase PostgreSQL Backend & RLS Status"
+            className="flex items-center space-x-1.5 text-slate-300 hover:text-white transition text-[11px] px-2.5 py-0.5 rounded-md bg-slate-800 border border-slate-700 hover:bg-slate-700"
+          >
+            <Database className="w-3.5 h-3.5 text-blue-400" />
+            <span className="hidden sm:inline font-medium">Supabase DB</span>
+          </button>
 
           {/* Reset Demo State Button */}
           <button
@@ -266,6 +294,12 @@ export const Header: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Security RBAC Access Matrix Modal */}
+      <SecurityMatrixModal isOpen={isSecurityMatrixOpen} onClose={() => setIsSecurityMatrixOpen(false)} />
+
+      {/* Supabase PostgreSQL Backend Modal */}
+      <SupabaseStatusModal isOpen={isSupabaseModalOpen} onClose={() => setIsSupabaseModalOpen(false)} />
     </header>
   );
 };
