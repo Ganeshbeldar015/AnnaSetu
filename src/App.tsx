@@ -34,7 +34,9 @@ import { AnalyticsCharts } from './components/admin/AnalyticsCharts';
 import { SmartAutomationHub } from './components/admin/SmartAutomationHub';
 import { ReportsGenerator } from './components/admin/ReportsGenerator';
 
-// Navigation Icons
+import { RoleGuard } from './components/common/RoleGuard';
+
+// Navigation Icons (powered by react-icons)
 import { 
   Home, 
   Calendar, 
@@ -53,7 +55,7 @@ import {
   Globe,
   Sparkles,
   ShieldCheck
-} from 'lucide-react';
+} from './components/common/Icons';
 
 export const App: React.FC = () => {
   const { currentRole, activeView, setActiveView, isMobileEmulation, t } = useApp();
@@ -259,55 +261,61 @@ export const App: React.FC = () => {
       })();
 
       return (
-        <MobileFrameWrapper>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            {farmerContent}
-          </div>
-        </MobileFrameWrapper>
+        <RoleGuard requiredRole="farmer">
+          <MobileFrameWrapper>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              {farmerContent}
+            </div>
+          </MobileFrameWrapper>
+        </RoleGuard>
       );
     }
 
     // OPERATOR ROLE
     if (currentRole === 'operator') {
       return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {(() => {
-            switch (activeView) {
-              case 'live_queue':
-                return <LiveQueueManager />;
-              case 'weighment_terminal':
-                return <ProcurementQCTerminal />;
-              case 'capacity_control':
-                return <CenterCapacityControl />;
-              case 'dashboard':
-              default:
-                return <OperatorDashboard />;
-            }
-          })()}
-        </div>
+        <RoleGuard requiredRole="operator">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {(() => {
+              switch (activeView) {
+                case 'live_queue':
+                  return <LiveQueueManager />;
+                case 'weighment_terminal':
+                  return <ProcurementQCTerminal />;
+                case 'capacity_control':
+                  return <CenterCapacityControl />;
+                case 'dashboard':
+                default:
+                  return <OperatorDashboard />;
+              }
+            })()}
+          </div>
+        </RoleGuard>
       );
     }
 
     // ADMIN ROLE
     if (currentRole === 'admin') {
       return (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {(() => {
-            switch (activeView) {
-              case 'geospatial_map':
-                return <GeospatialCenterMap />;
-              case 'analytics':
-                return <AnalyticsCharts />;
-              case 'smart_automation':
-                return <SmartAutomationHub />;
-              case 'reports':
-                return <ReportsGenerator />;
-              case 'overview':
-              default:
-                return <AdminDashboard />;
-            }
-          })()}
-        </div>
+        <RoleGuard requiredRole="admin">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {(() => {
+              switch (activeView) {
+                case 'geospatial_map':
+                  return <GeospatialCenterMap />;
+                case 'analytics':
+                  return <AnalyticsCharts />;
+                case 'smart_automation':
+                  return <SmartAutomationHub />;
+                case 'reports':
+                  return <ReportsGenerator />;
+                case 'overview':
+                default:
+                  return <AdminDashboard />;
+              }
+            })()}
+          </div>
+        </RoleGuard>
       );
     }
 

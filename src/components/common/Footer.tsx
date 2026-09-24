@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Phone, Mail, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Phone, Mail, CheckCircle2 } from './Icons';
 import { useApp } from '../../context/AppContext';
 
 export const Footer: React.FC = () => {

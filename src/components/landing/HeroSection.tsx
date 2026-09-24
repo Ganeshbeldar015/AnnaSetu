@@ -8,7 +8,7 @@ import {
   Scale,
   CreditCard,
   QrCode
-} from 'lucide-react';
+} from '../common/Icons';
 
 export const HeroSection: React.FC = () => {
   const { setCurrentRole, setActiveView, isAuthenticated, openAuthModal, t } = useApp();

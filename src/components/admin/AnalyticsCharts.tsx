@@ -23,7 +23,7 @@ import {
   CheckCircle2, 
   ShieldCheck,
   AlertCircle
-} from 'lucide-react';
+} from '../common/Icons';
 
 export const AnalyticsCharts: React.FC = () => {
   const [selectedState, setSelectedState] = useState('all');

@@ -11,7 +11,7 @@ import {
   CheckCircle2, 
   ShieldCheck,
   FileText
-} from 'lucide-react';
+} from '../common/Icons';
 import { formatCurrencyINR } from '../../utils/formatters';
 
 export const ReportsGenerator: React.FC = () => {

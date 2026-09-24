@@ -13,7 +13,7 @@ import {
   AlertCircle,
   Clock,
   Building2
-} from 'lucide-react';
+} from '../common/Icons';
 import { FarmerProfile } from '../../types';
 
 export const RegistrationWizard: React.FC = () => {

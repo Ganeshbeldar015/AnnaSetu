@@ -14,7 +14,7 @@ import {
   TrendingUp,
   ShieldCheck,
   RotateCcw
-} from 'lucide-react';
+} from '../common/Icons';
 import { formatCurrencyINR } from '../../utils/formatters';
 
 export const OperatorDashboard: React.FC = () => {

@@ -10,7 +10,7 @@ import {
   Printer,
   ArrowRight,
   Truck
-} from 'lucide-react';
+} from '../common/Icons';
 import { calculateJourneyPlan } from '../../utils/calculations';
 import { BookingToken } from '../../types';
 import { PrintableTokenModal } from '../common/PrintableTokenModal';

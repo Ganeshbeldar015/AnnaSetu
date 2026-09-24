@@ -10,7 +10,7 @@ import {
   CheckCircle2, 
   AlertCircle,
   Phone
-} from 'lucide-react';
+} from '../common/Icons';
 
 export const CenterLocatorPreview: React.FC = () => {
   const { centers, setCurrentRole, setActiveView } = useApp();

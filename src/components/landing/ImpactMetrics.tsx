@@ -9,7 +9,7 @@ import {
   CheckCircle2,
   Building2,
   AlertCircle
-} from 'lucide-react';
+} from '../common/Icons';
 import { useApp } from '../../context/AppContext';
 
 export const ImpactMetrics: React.FC = () => {

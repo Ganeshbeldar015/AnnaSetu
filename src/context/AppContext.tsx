@@ -22,6 +22,7 @@ import {
 import { announceTokenSpeech, playMandiChime } from '../utils/audio';
 import { estimateWaitTime } from '../utils/calculations';
 import { getTranslation, SupportedLanguage } from '../utils/translations';
+import { supabaseService } from '../services/supabaseService';
 
 interface AppContextType {
   // Navigation & Role
@@ -46,6 +47,11 @@ interface AppContextType {
   recommendations: SmartRecommendation[];
   isNotificationDrawerOpen: boolean;
   setIsNotificationDrawerOpen: (val: boolean) => void;
+  isSecurityMatrixOpen: boolean;
+  setIsSecurityMatrixOpen: (val: boolean) => void;
+  isSupabaseModalOpen: boolean;
+  setIsSupabaseModalOpen: (val: boolean) => void;
+  updateCenterDetails: (centerId: string, updates: Partial<ProcurementCenter>) => void;
   
   // Authentication State
   isAuthenticated: boolean;
@@ -96,6 +102,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [notifications, setNotifications] = useState<SimulatedNotification[]>(INITIAL_NOTIFICATIONS);
   const [recommendations, setRecommendations] = useState<SmartRecommendation[]>(SMART_RECOMMENDATIONS);
   const [isNotificationDrawerOpen, setIsNotificationDrawerOpen] = useState<boolean>(false);
+  const [isSecurityMatrixOpen, setIsSecurityMatrixOpen] = useState<boolean>(false);
+  const [isSupabaseModalOpen, setIsSupabaseModalOpen] = useState<boolean>(false);
+
+  // Dynamic center detail updater
+  const updateCenterDetails = (centerId: string, updates: Partial<ProcurementCenter>) => {
+    setCenters(prev => prev.map(c => c.id === centerId ? { ...c, ...updates } : c));
+  };
 
   // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -291,6 +304,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return [...filtered, newToken];
     });
 
+    // Dynamically update center load & queue
+    setCenters(prev => prev.map(c => {
+      if (c.id === center.id) {
+        const newQueue = c.currentQueueCount + 1;
+        const newProcured = c.dailyProcuredQuintals + data.expectedQuintals;
+        const loadStatus = newProcured > c.dailyCapacityQuintals * 0.9 ? 'high_load' : newProcured > c.dailyCapacityQuintals * 0.7 ? 'busy' : 'normal';
+        return {
+          ...c,
+          currentQueueCount: newQueue,
+          dailyProcuredQuintals: newProcured,
+          loadStatus
+        };
+      }
+      return c;
+    }));
+
+    // Asynchronously sync with Supabase and log security audit
+    supabaseService.saveBooking(newToken);
+    supabaseService.logAudit(
+      farmerProfile.id,
+      farmerProfile.name,
+      'farmer',
+      'BOOK_SLOT',
+      `Booked ${data.expectedQuintals} qtl for ${crop.name} at ${center.name} (${data.timeSlot})`
+    );
+
     addNotification(
       'Slot Booked Successfully', 
       `Token ${tokenNumber} allocated for ${data.timeSlot} at ${center.name}.`,
@@ -303,6 +342,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // 2. Check-In Action
   const checkInFarmerToken = (tokenId: string) => {
     playMandiChime();
+    const checkInTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     setBookings(prev => prev.map(b => {
       if (b.id === tokenId || b.tokenNumber === tokenId) {
         return {
@@ -310,11 +350,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           stage: 'checked_in',
           queuePosition: 8,
           estimatedWaitMinutes: 24,
-          checkedInAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          checkedInAt: checkInTime
         };
       }
       return b;
     }));
+
+    supabaseService.updateBookingStage(tokenId, 'checked_in', { checkedInAt: checkInTime });
+    supabaseService.logAudit(farmerProfile.id, farmerProfile.name, 'farmer', 'GATE_CHECKIN', `Scanned QR at Gate for token ${tokenId}`);
 
     addNotification(
       'Gate Check-in Successful',
@@ -398,6 +441,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } catch {
       // ignore
     }
+
+    // Sync QC to Supabase & Log Audit
+    supabaseService.saveQCInspection(tokenId, qc);
+    supabaseService.updateBookingStage(tokenId, 'procurement_completed', { actualQuantityQuintals: qc.actualQuantityQuintals });
+    supabaseService.logAudit(
+      'operator',
+      qc.inspectorName,
+      'operator',
+      'ISSUE_EJ_FORM',
+      `Issued E-J Form for token ${tokenId}, weight ${qc.actualQuantityQuintals} qtl, net ₹${qc.netPayableAmount}`
+    );
 
     addNotification(
       'Procurement Completed (E-J Form Issued)',
@@ -559,6 +613,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         recommendations,
         isNotificationDrawerOpen,
         setIsNotificationDrawerOpen,
+        isSecurityMatrixOpen,
+        setIsSecurityMatrixOpen,
+        isSupabaseModalOpen,
+        setIsSupabaseModalOpen,
+        updateCenterDetails,
         isAuthenticated,
         authUser,
         isAuthModalOpen,

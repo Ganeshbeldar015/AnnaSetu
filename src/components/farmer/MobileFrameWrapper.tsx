@@ -11,7 +11,7 @@ import {
   Signal, 
   Smartphone,
   Sparkles
-} from 'lucide-react';
+} from '../common/Icons';
 
 interface MobileFrameWrapperProps {
   children: React.ReactNode;

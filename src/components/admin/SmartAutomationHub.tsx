@@ -10,10 +10,10 @@ import {
   CloudRain, 
   Radio, 
   Sliders, 
-  ArrowRight,
-  ShieldCheck,
-  AlertCircle
-} from 'lucide-react';
+  ArrowRight, 
+  ShieldCheck, 
+  AlertCircle 
+} from '../common/Icons';
 
 export const SmartAutomationHub: React.FC = () => {
   const { recommendations, applyRecommendation, centers } = useApp();

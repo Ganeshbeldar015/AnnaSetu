@@ -11,9 +11,9 @@ import {
   Sparkles, 
   FileSpreadsheet, 
   Radio, 
-  ArrowRight,
-  BarChart3
-} from 'lucide-react';
+  ArrowRight, 
+  BarChart3 
+} from '../common/Icons';
 import { formatCurrencyINR } from '../../utils/formatters';
 
 export const AdminDashboard: React.FC = () => {
